@@ -1,11 +1,11 @@
 #include "pch.h"
 
 #include "Logging.h"
+#include "RAIITemplates.h"
 
 #include <iostream>
 
 OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::_spInstance = NULL;
-HANDLE OmniliumKnox::Core::Logging::_shMutex = NULL;
 ULONGLONG OmniliumKnox::Core::Logging::_sullStartTime = 0;
 
 OmniliumKnox::Core::Logging::Logging() {
@@ -13,27 +13,12 @@ OmniliumKnox::Core::Logging::Logging() {
 }
 
 OmniliumKnox::Core::Logging::~Logging() {
-	if (_shMutex != NULL) {
-		CloseHandle(_shMutex);
-	}
-
-	if (_spInstance != NULL) {
-		delete _spInstance;
-	}
+	
 }
 
 OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::GetInstance() {
-	if (_shMutex == NULL) {
-		// TODO: Create private namespace for objects and place the Mutex there.
-		_shMutex = CreateMutex(0, FALSE, L"OmniliumKnox.Core.Logging.Logging.Mutex");
-
-		if (_shMutex == NULL) {
-			// TODO: Mutex could not be created, handle.
-			return NULL;
-		}
-	}
-
-	DWORD dwWaitResult = WaitForSingleObject(_shMutex, INFINITE);
+	AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex");
+	DWORD dwWaitResult = mutex->AcquireMutex(INFINITE);
 
 	if (dwWaitResult == WAIT_ABANDONED) {
 		// TODO: Mutex is abandoned, possible corrupted state, handle.
@@ -43,8 +28,6 @@ OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::GetInstance() {
 	if (_spInstance == NULL) {
 		_spInstance = new Logging();
 	}
-
-	ReleaseMutex(_shMutex);
 
 	return _spInstance;
 }

@@ -17,7 +17,6 @@ namespace OmniliumKnox {
 
 		private:
 			static Logging* _spInstance;
-			static HANDLE _shMutex;
 			static ULONGLONG _sullStartTime;
 
 		protected:

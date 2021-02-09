@@ -1,9 +1,15 @@
 add_compile_definitions(CORE_EXPORTS=1)
 
-add_library(Core SHARED Src/Core.cpp
-                        Src/Logging.cpp
-                        Src/Utils.cpp
-                        Src/dllmain.cpp)
+set(CPP_FILES Src/Core.cpp
+              Src/Logging.cpp
+              Src/Utils.cpp
+              Src/dllmain.cpp "Src/RAIITemplates.cpp")
+
+set(H_FILES Include/Core.h
+            Include/Logging.h
+            Include/Utils.h "Include/RAIITemplates.h")
+
+add_library(Core SHARED ${CPP_FILES} ${H_FILES})
 
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Include)
 
