@@ -11,5 +11,4 @@ target_precompile_headers(Core PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Include/pch.h)
 
 
 install(TARGETS Core
-        RUNTIME DESTINATION bin
-        ARCHIVE DESTINATION bin)
+        RUNTIME DESTINATION bin)
