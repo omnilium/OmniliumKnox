@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "RAIITemplates.h"
 
 #define LOG_LEVEL_TRACE 0
 #define LOG_LEVEL_DEBUG 1
@@ -18,6 +19,8 @@ namespace OmniliumKnox {
 		private:
 			static Logging* _spInstance;
 			static ULONGLONG _sullStartTime;
+
+			AutoHandle<HANDLE> _hLogFile;
 
 		protected:
 			Logging();

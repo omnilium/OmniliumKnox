@@ -8,17 +8,29 @@
 OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::_spInstance = NULL;
 ULONGLONG OmniliumKnox::Core::Logging::_sullStartTime = 0;
 
-OmniliumKnox::Core::Logging::Logging() {
+OmniliumKnox::Core::Logging::Logging() : _hLogFile(CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)) {
+	if (_hLogFile.Handle == INVALID_HANDLE_VALUE) {
+		DWORD error = GetLastError();
+
+		if (error == 3) {
+			CreateDirectory(L".\\logs\\", NULL);
+			_hLogFile = new AutoHandle<HANDLE>(CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
+		}
+		else {
+			printf("Error creating log file: %d\n", error);
+		}
+	}
+
 	_sullStartTime = GetTickCount64();
 }
 
 OmniliumKnox::Core::Logging::~Logging() {
-	
+	delete& _hLogFile;
 }
 
 OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::GetInstance() {
-	AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex");
-	DWORD dwWaitResult = mutex->AcquireMutex(INFINITE);
+	AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex::Instance");
+	DWORD dwWaitResult = mutex->Acquire(INFINITE);
 
 	if (dwWaitResult == WAIT_ABANDONED) {
 		// TODO: Mutex is abandoned, possible corrupted state, handle.
@@ -67,5 +79,15 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 
 	wprintf_s(L"%s", wcMessage);
 
-	// TODO: Add logging to file.
+	{
+		AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex::Write");
+		DWORD dwWaitResult = mutex->Acquire(INFINITE);
+
+		if (dwWaitResult == WAIT_ABANDONED) {
+			// TODO: Mutex is abandoned, possible corrupted state, handle.
+			return;
+		}
+
+		WriteFile(_hLogFile.Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL);
+	}
 }

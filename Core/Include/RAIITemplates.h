@@ -40,8 +40,12 @@ namespace OmniliumKnox {
 				delete &_hMutex;
 			}
 
-			DWORD AcquireMutex(DWORD dwWaitLimitMs) {
+			DWORD Acquire(DWORD dwWaitLimitMs) {
 				return WaitForSingleObject(_hMutex.Handle, dwWaitLimitMs);
+			}
+
+			void Release() {
+				ReleaseMutex(_hMutex.Handle);
 			}
 		};
 	}
