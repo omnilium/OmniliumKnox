@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "Logging.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
