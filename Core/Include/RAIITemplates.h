@@ -13,6 +13,7 @@ namespace OmniliumKnox {
 			AutoHandle(T hTarget) : Handle(hTarget) {
 				if (Handle == INVALID_HANDLE_VALUE) {
 					// TODO: Invalid or uninitialized handle provided, handle.
+					printf("Invalid handle provided.");
 					return;
 				}
 			}
@@ -20,6 +21,7 @@ namespace OmniliumKnox {
 			~AutoHandle() {
 				if (Handle == INVALID_HANDLE_VALUE) {
 					// TODO: Possible data corruption, throw error.
+					printf("Tried to dereference an invalid handle.");
 					return;
 				}
 

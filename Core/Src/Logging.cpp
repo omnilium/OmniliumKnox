@@ -17,6 +17,7 @@ OmniliumKnox::Core::Logging::Logging() : _hLogFile(CreateFile(L".\\logs\\log.txt
 			_hLogFile = new AutoHandle<HANDLE>(CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 		}
 		else {
+			// TODO: Cannot create log file, handle.
 			printf("Error creating log file: %d\n", error);
 		}
 	}
@@ -34,6 +35,7 @@ OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::GetInstance() {
 
 	if (dwWaitResult == WAIT_ABANDONED) {
 		// TODO: Mutex is abandoned, possible corrupted state, handle.
+		printf("Returned Mutex handle was abandoned.");
 		return NULL;
 	}
 
@@ -85,9 +87,14 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 
 		if (dwWaitResult == WAIT_ABANDONED) {
 			// TODO: Mutex is abandoned, possible corrupted state, handle.
+			printf("Returned Mutex handle was abandoned.");
 			return;
 		}
 
-		WriteFile(_hLogFile.Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL);
+		if (!WriteFile(_hLogFile.Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL)) {
+			// TODO: Cannot create log file, handle.
+			DWORD error = GetLastError();
+			printf("Error writing log file: %d\n", error);
+		}
 	}
 }
