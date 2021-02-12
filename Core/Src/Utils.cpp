@@ -11,3 +11,9 @@ void OmniliumKnox::Core::Utils::GetWorkingDirectory(LPWSTR lpDest) {
 
 	GetModuleFileName(NULL, lpDest, MAX_PATH);
 }
+
+BOOL OmniliumKnox::Core::Utils::DirectoryExists(LPCWSTR lpPath) {
+	DWORD dwAttrib = GetFileAttributes(lpPath);
+
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}

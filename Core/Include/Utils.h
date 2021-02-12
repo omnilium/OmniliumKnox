@@ -7,6 +7,7 @@ namespace OmniliumKnox {
 		class CORE_API Utils {
 		public:
 			static void GetWorkingDirectory(LPWSTR lpDest);
+			static BOOL DirectoryExists(LPCWSTR);
 		};
 	}
 };

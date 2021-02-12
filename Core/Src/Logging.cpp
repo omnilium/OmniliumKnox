@@ -2,25 +2,27 @@
 
 #include "Logging.h"
 #include "RAIITemplates.h"
+#include "Utils.h"
 
 #include <iostream>
 
 OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::_spInstance = NULL;
 ULONGLONG OmniliumKnox::Core::Logging::_sullStartTime = 0;
 
-OmniliumKnox::Core::Logging::Logging() : _hLogFile(CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)) {
-	if (_hLogFile.Handle == INVALID_HANDLE_VALUE) {
-		DWORD error = GetLastError();
-
-		if (error == 3) {
-			CreateDirectory(L".\\logs\\", NULL);
-			_hLogFile = new AutoHandle<HANDLE>(CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
-		}
-		else {
-			// TODO: Cannot create log file, handle.
-			printf("Error creating log file: %d\n", error);
-		}
+OmniliumKnox::Core::Logging::Logging() {
+	if (!Utils::DirectoryExists(L".\\logs\\")) {
+		CreateDirectory(L".\\logs\\", NULL);
 	}
+
+	HANDLE hLogFile = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hLogFile == INVALID_HANDLE_VALUE) {
+		// TODO: Cannot create log file, handle.
+		DWORD error = GetLastError();
+		printf("Error creating log file: %d\n", error);
+	}
+
+	_hLogFile = new AutoHandle<HANDLE>(hLogFile);
 
 	_sullStartTime = GetTickCount64();
 }
@@ -91,7 +93,7 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 			return;
 		}
 
-		if (!WriteFile(_hLogFile.Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL)) {
+		if (!WriteFile(_hLogFile->Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL)) {
 			// TODO: Cannot create log file, handle.
 			DWORD error = GetLastError();
 			printf("Error writing log file: %d\n", error);

@@ -20,7 +20,7 @@ namespace OmniliumKnox {
 			static Logging* _spInstance;
 			static ULONGLONG _sullStartTime;
 
-			AutoHandle<HANDLE> _hLogFile;
+			AutoHandle<HANDLE>* _hLogFile = NULL;
 
 		protected:
 			Logging();
