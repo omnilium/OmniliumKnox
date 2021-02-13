@@ -1,8 +1,10 @@
 set(CPP_FILES "src/KnoxC.cpp")
 
-set(H_FILES "include/pch.h")
+set(H_FILES "include/pch.h"
+			"include/Resources.h"
+)
 
-add_executable(KnoxC ${CPP_FILES} ${H_FILES})
+add_executable(KnoxC ${CPP_FILES} ${H_FILES} "app.rc")
 
 target_include_directories(KnoxC PRIVATE "include/")
 

@@ -2,15 +2,21 @@
 
 #include "Logging.h"
 
+#include "Resources.h"
+
 #include <iostream>
 
 using namespace OmniliumKnox::Core;
 
-int main()
-{
-    Logging* pLogging = Logging::GetInstance();
+int main() {
+	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(APP_ICON));
+	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
+	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
+	SetWindowText(GetConsoleWindow(), L"Omnilium Knox");
 
-    pLogging->Log(LOG_LEVEL_INFO, L"Application startup");
+	Logging* pLogging = Logging::GetInstance();
 
-    system("pause");
+	pLogging->Log(LOG_LEVEL_INFO, L"Application startup");
+
+	system("pause");
 }

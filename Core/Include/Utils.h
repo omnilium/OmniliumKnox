@@ -8,6 +8,7 @@ namespace OmniliumKnox {
 		public:
 			static void GetWorkingDirectory(LPWSTR lpDest);
 			static BOOL DirectoryExists(LPCWSTR);
+			static HMODULE GetCurrentModule();
 		};
 	}
 };

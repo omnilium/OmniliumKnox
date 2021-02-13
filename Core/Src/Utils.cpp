@@ -17,3 +17,10 @@ BOOL OmniliumKnox::Core::Utils::DirectoryExists(LPCWSTR lpPath) {
 
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
+
+HMODULE OmniliumKnox::Core::Utils::GetCurrentModule() {
+	HMODULE hModule = NULL;
+	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR)GetCurrentModule, &hModule);
+
+	return hModule;
+}
