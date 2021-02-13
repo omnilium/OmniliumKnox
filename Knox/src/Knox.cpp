@@ -36,7 +36,6 @@ void Knox::OnClose() {
 
 void Knox::OnResize(uint32_t width, uint32_t height) {
   overlay_->Resize(width, height);
-  inspectorOverlay_->Resize(width, height);
 }
 
 void Knox::OnFinishLoading(ultralight::View* caller,
