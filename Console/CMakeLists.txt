@@ -1,9 +1,13 @@
-add_executable(Console Src/Console.cpp)
+set(CPP_FILES src/KnoxC.cpp)
 
-target_include_directories(Console PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Include)
+set(H_FILES include/pch.h)
 
-target_link_libraries(Console Core)
+add_executable(KnoxC ${CPP_FILES} ${H_FILES})
 
-target_precompile_headers(Console PRIVATE ${CMAKE_CURRENT_LIST_DIR}/Include/pch.h)
+target_include_directories(KnoxC PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 
-install(TARGETS Console RUNTIME DESTINATION bin)
+target_precompile_headers(KnoxC PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include/pch.h)
+
+target_link_libraries(KnoxC Core)
+
+install(TARGETS KnoxC RUNTIME DESTINATION bin)

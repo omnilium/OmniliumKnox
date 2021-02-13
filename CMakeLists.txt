@@ -7,8 +7,9 @@ ADD_DEFINITIONS(-D_UNICODE)
 
 add_subdirectory(Core)
 add_subdirectory(Console)
+add_subdirectory(Knox)
 
 add_custom_target(LOCAL_INSTALL ALL "${CMAKE_COMMAND}"
                   -D CMAKE_INSTALL_PREFIX:string=${CMAKE_CURRENT_BINARY_DIR}/install
                   -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake"
-                  DEPENDS Console Core)
+                  DEPENDS GUI Console Core)
