@@ -28,10 +28,10 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($path, "$HOME/.sonar")
 $env:Path += ";$SONAR_SCANNER_HOME\bin"
 
-New-Item -ItemType directory -Path ./out
-Set-Location ./out/
-cmake .. -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_INSTALL_PREFIX:PATH="artifact/"
+New-Item -ItemType directory -Path ./sonar
+Set-Location ./sonar/
+cmake .. -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_INSTALL_PREFIX:PATH="sonar/"
 
-build-wrapper-win-x86-64 --out-dir sonar cmake --build . --config Release
+build-wrapper-win-x86-64 --out-dir sonar-analysis cmake --build . --config Release
 
-sonar-scanner -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=$BUILD_VERSION -D sonar.sourceEncoding=UTF-8
+sonar-scanner -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=$BUILD_VERSION -D sonar.sourceEncoding=UTF-8 -D sonar.sources=. -D sonar.cfamily.build-wrapper-output=sonar-analysis
