@@ -7,15 +7,16 @@ env:
 
 jobs:
   build:
+    name: Build
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Build
-      run: ./azure-build.ps1
+      run: ./ci-build.ps1
         
-    - name: Get Time
+    - name: Get Timestamp
       id: time
       uses: nanzm/get-time-action@v1.1
       with:
@@ -30,7 +31,7 @@ jobs:
         directory: ${{github.workspace}}/out/artifacts
         # exclusions: 
     
-    - name: Upload a Build Artifact
+    - name: Upload a Zipped Release
       uses: actions/upload-artifact@v2.2.2
       with:
         name: ${{secrets.BUILD_VERSION}}-b${{github.run_number}}-${{steps.time.outputs.time}}
@@ -40,13 +41,13 @@ jobs:
 
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        run: ./sonar-build.ps1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
