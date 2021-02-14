@@ -34,4 +34,4 @@ cmake .. -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_INSTALL_PREFIX:PATH="artifa
 
 build-wrapper-win-x86-64 --out-dir sonar cmake --build . --config Release
 
-sonar-scanner -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_ORGANIZATION}:${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=$BUILD_VERSION -D sonar.sourceEncoding=UTF-8
+sonar-scanner -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=$BUILD_VERSION -D sonar.sourceEncoding=UTF-8
