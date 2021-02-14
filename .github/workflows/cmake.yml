@@ -1,0 +1,41 @@
+name: CMake
+
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: PowerShell script
+      uses: Amadevus/pwsh-script@v2.0.1
+      with:
+        script: ${{github.workspace}}/azure-build.ps1
+        
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.1
+      with:
+        timeZone: 0
+        format: 'YYYYMMDDHHmmss'
+    
+    - name: Zip Release
+      uses: TheDoctor0/zip-release@0.4.1
+      with:
+        filename: knox-${{secrets.BUILD_VERSION}}-b${{github.run_number}}-${{steps.time.outputs.time}}.zip
+        path: ${{github.workspace}}/out
+        directory: ${{github.workspace}}/out/artifacts
+        # exclusions: 
+    
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: ${{secrets.BUILD_VERSION}}-b${{github.run_number}}-${{steps.time.outputs.time}}
+        path: ${{github.workspace}}/out/artifacts/knox-*.zip
+        if-no-files-found: error
+        retention-days: 90
