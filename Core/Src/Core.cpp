@@ -4,5 +4,5 @@
 
 OmniliumKnox::Core::Core::Core()
 {
-    return;
+	return;
 }

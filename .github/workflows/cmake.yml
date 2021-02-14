@@ -12,10 +12,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: PowerShell script
-      uses: Amadevus/pwsh-script@v2.0.1
-      with:
-        script: ${{github.workspace}}/azure-build.ps1
+    - name: Build
+      run: ./azure-build.ps1
         
     - name: Get Time
       id: time
@@ -39,3 +37,16 @@ jobs:
         path: ${{github.workspace}}/out/artifacts/knox-*.zip
         if-no-files-found: error
         retention-days: 90
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -15,7 +15,6 @@
 namespace OmniliumKnox {
 	namespace Core {
 		class CORE_API Logging {
-
 		private:
 			static Logging* _spInstance;
 			static ULONGLONG _sullStartTime;

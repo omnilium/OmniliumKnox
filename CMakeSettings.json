@@ -8,9 +8,10 @@
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
+            "buildCommandArgs": "-- '/p:RunCodeAnalysis=true;CodeAnalysisRuleSet=AllRules.ruleset'",
             "ctestCommandArgs": "",
-            "variables": []
+            "variables": [],
+            "codeAnalysisRuleset": "AllRules.ruleset"
         },
         {
             "name": "x64-Release",
@@ -19,10 +20,11 @@
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
+            "buildCommandArgs": "-- '/p:RunCodeAnalysis=true;CodeAnalysisRuleSet=AllRules.ruleset'",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "msvc_x64_x64" ],
-            "variables": []
+            "variables": [],
+            "codeAnalysisRuleset": "AllRules.ruleset"
         }
     ]
 }

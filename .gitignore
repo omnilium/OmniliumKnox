@@ -417,4 +417,7 @@ MigrationBackup/
 # Include the CMake out/ directory
 out/**
 
+# Include the solution directory
+sln/**
+
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio,cmake

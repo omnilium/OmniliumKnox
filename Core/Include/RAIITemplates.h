@@ -6,7 +6,6 @@ namespace OmniliumKnox {
 	namespace Core {
 		template <typename T>
 		class CORE_API AutoHandle {
-
 		public:
 			T Handle;
 
@@ -28,7 +27,6 @@ namespace OmniliumKnox {
 		};
 
 		class CORE_API AutoMutex {
-
 		private:
 			AutoHandle<HANDLE> _hMutex;
 
@@ -37,7 +35,7 @@ namespace OmniliumKnox {
 
 			~AutoMutex() {
 				ReleaseMutex(_hMutex.Handle);
-				delete &_hMutex;
+				delete& _hMutex;
 			}
 
 			DWORD Acquire(DWORD dwWaitLimitMs) {

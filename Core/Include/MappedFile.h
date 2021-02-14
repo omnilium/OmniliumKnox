@@ -6,7 +6,6 @@
 namespace OmniliumKnox {
 	namespace Core {
 		class CORE_API MappedFile {
-			
 		private:
 			AutoHandle<HANDLE> _hFile = new AutoHandle<HANDLE>(INVALID_HANDLE_VALUE);
 			AutoHandle<HANDLE> _hFileMapping = new AutoHandle<HANDLE>(INVALID_HANDLE_VALUE);
