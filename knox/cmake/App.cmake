@@ -75,10 +75,7 @@ MACRO(ADD_APP app_name source_list)
 
   # Copy all binaries to target directory
   add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_BINARY_DIR}" $<TARGET_FILE_DIR:${APP_NAME}>) 
-
-  add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_BINARY_DIR}" "${CMAKE_INSTALL_PREFIX}/bin") 
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_BINARY_DIR}" $<TARGET_FILE_DIR:${APP_NAME}>)
 
   if (APPLE)
     set(ASSETS_PATH "$<TARGET_FILE_DIR:${APP_NAME}>/../Resources/assets") 
@@ -90,16 +87,10 @@ MACRO(ADD_APP app_name source_list)
   add_custom_command(TARGET ${APP_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/assets/" "${ASSETS_PATH}")
 
-  add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/assets/" "${CMAKE_INSTALL_PREFIX}/bin/assets")
-
   if(${ENABLE_INSPECTOR})
     # Copy inspector to assets directory
     add_custom_command(TARGET ${APP_NAME} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_INSPECTOR_DIR}" "${ASSETS_PATH}/inspector")
-
-    add_custom_command(TARGET ${APP_NAME} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_INSPECTOR_DIR}" "${CMAKE_INSTALL_PREFIX}/bin/assets/inspector")
   endif ()
 
   if (APPLE)
@@ -112,8 +103,12 @@ MACRO(ADD_APP app_name source_list)
   add_custom_command(TARGET ${APP_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_BINARY_DIR}/resources/" "${RESOURCES_PATH}")
 
-  add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${ULTRALIGHT_BINARY_DIR}/resources/" "${CMAKE_INSTALL_PREFIX}/bin/resources")
-
   add_dependencies(${APP_NAME} UltralightSDK)
+
+  install(FILES ${ULTRALIGHT_BINARY_DIR}/AppCore.dll DESTINATION bin)
+  install(FILES ${ULTRALIGHT_BINARY_DIR}/Ultralight.dll DESTINATION bin)
+  install(FILES ${ULTRALIGHT_BINARY_DIR}/UltralightCore.dll DESTINATION bin)
+  install(FILES ${ULTRALIGHT_BINARY_DIR}/WebCore.dll DESTINATION bin)
+  install(DIRECTORY ${ASSETS_PATH} DESTINATION bin)
+  install(DIRECTORY ${RESOURCES_PATH} DESTINATION bin)
 ENDMACRO()

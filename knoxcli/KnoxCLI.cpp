@@ -1,8 +1,8 @@
-#include "pch.h"
+#include "private/pch.h"
 
 #include "Logging.h"
 
-#include "Resources.h"
+#include "private/Resources.h"
 
 #include <iostream>
 

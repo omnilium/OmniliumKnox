@@ -1,0 +1,5 @@
+#pragma once
+
+#cmakedefine OmniliumKnox_VERSION_MAJOR "@OmniliumKnox_VERSION_MAJOR@"
+#cmakedefine OmniliumKnox_VERSION_MINOR "@OmniliumKnox_VERSION_MINOR@"
+#define VERSION OmniliumKnox_VERSION_MAJOR + "." + OmniliumKnox_VERSION_MINOR

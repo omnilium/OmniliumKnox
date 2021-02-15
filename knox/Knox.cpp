@@ -1,8 +1,8 @@
-#include "pch.h"
+#include "private/pch.h"
 
 #include "Knox.h"
 
-#include "Resources.h"
+#include "private/Resources.h"
 
 #define WINDOW_WIDTH  600
 #define WINDOW_HEIGHT 400

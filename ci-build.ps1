@@ -1,6 +1,6 @@
-New-Item -ItemType directory -Path ./out
-Set-Location ./out/
-cmake .. -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_INSTALL_PREFIX:PATH="artifact/"
+New-Item -ItemType directory -Path ./ci-build
+Set-Location ./ci-build/
+cmake .. -DCMAKE_BUILD_TYPE:STRING="Release"
 cmake --build . --config Release
 New-Item -ItemType directory -Path ./artifacts
 Copy-Item -Path ./Core/Release/* -Destination ./artifacts -PassThru -Recurse -Force -Confirm:$False
