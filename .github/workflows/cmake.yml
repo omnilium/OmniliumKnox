@@ -27,7 +27,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         name: ${{secrets.BUILD_VERSION}}-b${{github.run_number}}-${{steps.time.outputs.time}}
-        path: ${{github.workspace}}/out/artifacts/*
+        path: ${{github.workspace}}/ci-build/artifacts/*
         if-no-files-found: error
         retention-days: 90
 
