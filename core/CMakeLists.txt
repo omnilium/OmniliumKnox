@@ -1,3 +1,7 @@
+include(generate_version_rc)
+
+generate_version_rc(DLL ${CMAKE_CURRENT_SOURCE_DIR}/private)
+
 set(LIB_NAME Core)
 
 add_compile_definitions(CORE_EXPORTS=1)
@@ -23,12 +27,14 @@ set(PUBLIC_H_FILES
 
 set(PRIVATE_H_FILES
         "${PRIVATE_H_FOLDER}/pch.h"
+        "${VERSION_INFO_FILE}"
         )
 
 add_library(${LIB_NAME} SHARED
         ${CPP_FILES}
         ${PUBLIC_H_FILES}
         ${PRIVATE_H_FILES}
+        "${VERSION_RC_FILE}"
         )
 
 target_include_directories(${LIB_NAME} PUBLIC

@@ -15,7 +15,12 @@ jobs:
 
     - name: Build
       run: ./ci-build.ps1
-        
+      env:
+        VERSION_MAJOR: ${{secrets.VERSION_MAJOR}}
+        VERSION_MINOR: ${{secrets.VERSION_MINOR}}
+        VERSION_PATCH: ${{secrets.VERSION_PATCH}}
+        VERSION_BUILD: ${{github.run_number}}
+
     - name: Get Timestamp
       id: time
       uses: nanzm/get-time-action@v1.1
@@ -26,7 +31,7 @@ jobs:
     - name: Upload a Zipped Release
       uses: actions/upload-artifact@v2.2.2
       with:
-        name: ${{secrets.BUILD_VERSION}}-b${{github.run_number}}-${{steps.time.outputs.time}}
+        name: ${{secrets.VERSION_MAJOR}}.${{secrets.VERSION_MINOR}}.${{secrets.VERSION_PATCH}}.${{github.run_number}}-${{steps.time.outputs.time}}
         path: ${{github.workspace}}/ci-build/artifacts/*
         if-no-files-found: error
         retention-days: 90
@@ -43,4 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          BUILD_VERSION: ${{ secrets.BUILD_VERSION }}
+          VERSION_MAJOR: ${{secrets.VERSION_MAJOR}}
+          VERSION_MINOR: ${{secrets.VERSION_MINOR}}
+          VERSION_PATCH: ${{secrets.VERSION_PATCH}}
+          VERSION_BUILD: ${{github.run_number}}

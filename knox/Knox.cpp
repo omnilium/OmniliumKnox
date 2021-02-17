@@ -2,7 +2,7 @@
 
 #include "Knox.h"
 
-#include "private/Resources.h"
+#include "../version.h"
 
 #define WINDOW_WIDTH  600
 #define WINDOW_HEIGHT 400

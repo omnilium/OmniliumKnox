@@ -1,0 +1,58 @@
+#include "version.h"
+#include <Winver.h>
+
+/*
+ * ICON BLOCK
+ */
+IDI_ICON1		ICON		DISCARDABLE		"app.ico"
+APP_ICON		ICON						"app.ico"
+
+/*
+ * VERSIONINFO BLOCK
+ */
+#define VER_FILEVERSION             0,1,0,1
+#define VER_FILEVERSION_STR         "0.1.0.1\0"
+
+#define VER_PRODUCTVERSION          0,1,0,1
+#define VER_PRODUCTVERSION_STR      "0.1.0.1\0"
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#define VER_BUILDTYPE               0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#define VER_BUILDTYPE               VS_FF_PRIVATEBUILD
+#define VER_PRIVATEBUILD            "Private build by Omnilium"
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VER_FILEVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       (VER_BUILDTYPE|VER_DEBUG)
+FILEOS          VOS_NT
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",        "Omnilium"
+            VALUE "FileDescription",    ""
+            VALUE "FileVersion",        VER_FILEVERSION_STR
+            VALUE "InternalName",       ""
+            VALUE "LegalCopyright",     ""
+            VALUE "LegalTrademarks1",   ""
+            VALUE "LegalTrademarks2",   ""
+            VALUE "OriginalFilename",   ""
+            VALUE "ProductName",        "Omnilium Knox"
+            VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END

@@ -1,4 +1,7 @@
 include(cmake/App.cmake)
+include(generate_version_rc)
+
+generate_version_rc(APP ${CMAKE_CURRENT_SOURCE_DIR}/private)
 
 set(EXE_NAME Knox)
 
@@ -15,12 +18,11 @@ set(PUBLIC_H_FILES
 
 set(PRIVATE_H_FILES
         "${PRIVATE_H_FOLDER}/pch.h"
-        "${PRIVATE_H_FOLDER}/Resources.h"
+        "${VERSION_INFO_FILE}"
         )
 
 set(ASSETS
-        "app.rc"
-        "app.ico"
+        "${VERSION_RC_FILE}"
         "assets/app.html"
         )
 

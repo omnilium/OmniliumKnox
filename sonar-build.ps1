@@ -42,4 +42,4 @@ build-wrapper-win-x86-64 --out-dir sonar-analysis cmake --build . --config Relea
 cmake --install . --config Release --prefix install
 
 Set-Location ../
-sonar-scanner -D sonar.login=$SONAR_TOKEN -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=$BUILD_VERSION -D sonar.sourceEncoding=UTF-8 -D sonar.sources=. -D sonar.cfamily.build-wrapper-output=sonar/sonar-analysis -D sonar.cfamily.threads=1 -D  sonar.cfamily.cache.enabled=true -D sonar.cfamily.cache.path=sonar-cache
+sonar-scanner -D sonar.login=$SONAR_TOKEN -D sonar.host.url=$SONAR_URL -D sonar.projectKey=${SONAR_PROJECT_KEY} -D sonar.organization=$SONAR_ORGANIZATION -D sonar.projectName=OmniliumKnox -D sonar.projectVersion=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_BUILD} -D sonar.sourceEncoding=UTF-8 -D sonar.sources=. -D sonar.cfamily.build-wrapper-output=sonar/sonar-analysis -D sonar.cfamily.threads=1 -D  sonar.cfamily.cache.enabled=true -D sonar.cfamily.cache.path=sonar-cache
