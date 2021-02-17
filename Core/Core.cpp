@@ -2,7 +2,4 @@
 
 #include "Core.h"
 
-OmniliumKnox::Core::Core::Core()
-{
-	return;
-}
+knox::core::Core::Core() = default;

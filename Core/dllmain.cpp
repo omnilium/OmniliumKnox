@@ -3,12 +3,12 @@
 #include "Logging.h"
 #include "private/version.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD  ul_reason_for_call,
-	LPVOID lpReserved
-)
+BOOL APIENTRY DllMain([[maybe_unused]] HMODULE hModule,
+	    DWORD  ul_reason_for_call,
+        [[maybe_unused]] LPVOID lpReserved
+    )
 {
-	OmniliumKnox::Core::Logging* pLogging = OmniliumKnox::Core::Logging::GetInstance();
+	knox::core::Logging* pLogging = knox::core::Logging::GetInstance();
 
 	switch (ul_reason_for_call)
 	{
@@ -20,6 +20,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	case DLL_PROCESS_DETACH:
 		pLogging->Log(LOG_LEVEL_DEBUG, L"Core detached.");
 		break;
+	default:
+	    throw std::exception("Unknown DllMain reason for call");
 	}
 	return TRUE;
 }

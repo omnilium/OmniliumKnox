@@ -2,13 +2,11 @@
 
 #include "Core.h"
 
-namespace OmniliumKnox {
-	namespace Core {
+namespace knox::core {
 		class CORE_API Utils {
 		public:
 			static void GetWorkingDirectory(LPWSTR lpDest);
 			static BOOL DirectoryExists(LPCWSTR);
 			static HMODULE GetCurrentModule();
 		};
-	}
-};
+	};

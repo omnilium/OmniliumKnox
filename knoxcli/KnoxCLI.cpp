@@ -5,10 +5,10 @@
 
 #include <iostream>
 
-using namespace OmniliumKnox::Core;
+using namespace knox::core;
 
 int main() {
-	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(APP_ICON));
+	HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON));
 	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
 	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
 	SetWindowText(GetConsoleWindow(), L"Omnilium Knox");

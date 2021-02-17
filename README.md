@@ -2,7 +2,7 @@
 
 -----
 
-![CMake](https://github.com/omnilium/OmniliumKnox/workflows/CMake/badge.svg?branch=main)
+![CMake](https://github.com/omnilium/knox/workflows/CMake/badge.svg?branch=main)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=omnilium_OmniliumKnox&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=omnilium_OmniliumKnox)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=omnilium_OmniliumKnox&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=omnilium_OmniliumKnox)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=omnilium_OmniliumKnox&metric=security_rating)](https://sonarcloud.io/dashboard?id=omnilium_OmniliumKnox)

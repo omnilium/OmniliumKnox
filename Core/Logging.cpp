@@ -6,20 +6,21 @@
 
 #include <iostream>
 
-OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::_spInstance = NULL;
-ULONGLONG OmniliumKnox::Core::Logging::_sullStartTime = 0;
+knox::core::Logging* knox::core::Logging::_spInstance = nullptr;
+ULONGLONG knox::core::Logging::_sullStartTime = 0;
 
-OmniliumKnox::Core::Logging::Logging() {
-	if (!Utils::DirectoryExists(L".\\logs\\")) {
+knox::core::Logging::Logging() {
+	if (!knox::core::Utils::DirectoryExists(L".\\logs\\")) {
 		CreateDirectory(L".\\logs\\", NULL);
 	}
 
-	HANDLE hLogFile = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hLogFile = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, nullptr, CREATE_ALWAYS,
+	        FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	if (hLogFile == INVALID_HANDLE_VALUE) {
 		// TODO: Cannot create log file, handle.
 		DWORD error = GetLastError();
-		printf("Error creating log file: %d\n", error);
+		printf("Error creating log file: %lu\n", error);
 	}
 
 	_hLogFile = new AutoHandle<HANDLE>(hLogFile);
@@ -27,28 +28,28 @@ OmniliumKnox::Core::Logging::Logging() {
 	_sullStartTime = GetTickCount64();
 }
 
-OmniliumKnox::Core::Logging::~Logging() {
+knox::core::Logging::~Logging() {
 	delete& _hLogFile;
 }
 
-OmniliumKnox::Core::Logging* OmniliumKnox::Core::Logging::GetInstance() {
-	AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex::Instance");
+knox::core::Logging* knox::core::Logging::GetInstance() {
+	auto* mutex = new AutoMutex(L"knox::core::Logging>Mutex::Instance");
 	DWORD dwWaitResult = mutex->Acquire(INFINITE);
 
 	if (dwWaitResult == WAIT_ABANDONED) {
 		// TODO: Mutex is abandoned, possible corrupted state, handle.
 		printf("Returned Mutex handle was abandoned.");
-		return NULL;
+		return nullptr;
 	}
 
-	if (_spInstance == NULL) {
+	if (_spInstance == nullptr) {
 		_spInstance = new Logging();
 	}
 
 	return _spInstance;
 }
 
-void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
+void knox::core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 	WCHAR wcErrorLevel[1];
 	switch (dwLogLevel) {
 	case LOG_LEVEL_TRACE:
@@ -57,6 +58,7 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 	case LOG_LEVEL_DEBUG:
 		wcErrorLevel[0] = L'D';
 		break;
+	default:
 	case LOG_LEVEL_INFO:
 		wcErrorLevel[0] = L'I';
 		break;
@@ -84,7 +86,7 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 	wprintf_s(L"%s", wcMessage);
 
 	{
-		AutoMutex* mutex = new AutoMutex(L"OmniliumKnox.Core.Logging.Logging.Mutex::Write");
+		auto* mutex = new AutoMutex(L"knox::core::Logging>Mutex::Write");
 		DWORD dwWaitResult = mutex->Acquire(INFINITE);
 
 		if (dwWaitResult == WAIT_ABANDONED) {
@@ -93,10 +95,10 @@ void OmniliumKnox::Core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...) {
 			return;
 		}
 
-		if (!WriteFile(_hLogFile->Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), NULL, NULL)) {
+		if (!WriteFile(_hLogFile->Handle, wcMessage, lstrlenW(wcMessage) * sizeof(wchar_t), nullptr, nullptr)) {
 			// TODO: Cannot create log file, handle.
 			DWORD error = GetLastError();
-			printf("Error writing log file: %d\n", error);
+			printf("Error writing log file: %lu\n", error);
 		}
 	}
 }

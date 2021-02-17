@@ -6,11 +6,9 @@
 #define CORE_API __declspec(dllimport)
 #endif
 
-namespace OmniliumKnox {
-	namespace Core {
+namespace knox::core {
 		class CORE_API Core {
 		public:
-			Core(void);
+			Core();
 		};
-	}
-};
+	};

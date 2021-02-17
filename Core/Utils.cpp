@@ -4,23 +4,23 @@
 
 #include <stdexcept>
 
-void OmniliumKnox::Core::Utils::GetWorkingDirectory(LPWSTR lpDest) {
+void knox::core::Utils::GetWorkingDirectory(LPWSTR lpDest) {
 	if (wcslen(lpDest) < MAX_PATH) {
 		throw std::invalid_argument("lpDest length < MAX_PATH");
 	}
 
-	GetModuleFileName(NULL, lpDest, MAX_PATH);
+	GetModuleFileName(nullptr, lpDest, MAX_PATH);
 }
 
-BOOL OmniliumKnox::Core::Utils::DirectoryExists(LPCWSTR lpPath) {
+BOOL knox::core::Utils::DirectoryExists(LPCWSTR lpPath) {
 	DWORD dwAttrib = GetFileAttributes(lpPath);
 
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-HMODULE OmniliumKnox::Core::Utils::GetCurrentModule() {
-	HMODULE hModule = NULL;
-	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR)GetCurrentModule, &hModule);
+HMODULE knox::core::Utils::GetCurrentModule() {
+	HMODULE hModule = nullptr;
+	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR)&GetCurrentModule, &hModule);
 
 	return hModule;
 }

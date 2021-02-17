@@ -3,23 +3,22 @@
 #include "Core.h"
 #include "RAIITemplates.h"
 
-#define LOG_LEVEL_TRACE 0
-#define LOG_LEVEL_DEBUG 1
-#define LOG_LEVEL_INFO  2
-#define LOG_LEVEL_WARN  3
-#define LOG_LEVEL_ERROR 4
+constexpr int LOG_LEVEL_TRACE = 0;
+constexpr int LOG_LEVEL_DEBUG = 1;
+constexpr int LOG_LEVEL_INFO =  2;
+constexpr int LOG_LEVEL_WARN =  3;
+constexpr int LOG_LEVEL_ERROR = 4;
 
-#define LOG_MAX_MESSAGE_LENGTH 400
-#define LOG_MAX_ENTRY_LENGTH   500
+constexpr int LOG_MAX_MESSAGE_LENGTH = 400;
+constexpr int LOG_MAX_ENTRY_LENGTH =   500;
 
-namespace OmniliumKnox {
-	namespace Core {
+namespace knox::core {
 		class CORE_API Logging {
 		private:
 			static Logging* _spInstance;
 			static ULONGLONG _sullStartTime;
 
-			AutoHandle<HANDLE>* _hLogFile = NULL;
+			AutoHandle<HANDLE>* _hLogFile = nullptr;
 
 		protected:
 			Logging();
@@ -33,5 +32,4 @@ namespace OmniliumKnox {
 
 			void Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...);
 		};
-	}
-};
+	};

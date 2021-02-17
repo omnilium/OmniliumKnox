@@ -4,66 +4,69 @@
 
 #include "../version.h"
 
-#define WINDOW_WIDTH  600
-#define WINDOW_HEIGHT 400
+constexpr int WINDOW_WIDTH = 600;
+constexpr int WINDOW_HEIGHT = 400;
 
-Knox::Knox() {
-	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(APP_ICON));
+knox::app::Knox::Knox() {
+	HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON));
 
-	app_ = App::Create();
+    _rpApp = App::Create();
 
-	window_ = Window::Create(app_->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
+    _rpWindow = Window::Create(_rpApp->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
 		false, kWindowFlags_Titled | kWindowFlags_Resizable);
-	SendMessage(HWND(window_->native_handle()), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
-	SendMessage(HWND(window_->native_handle()), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
+	SendMessage(HWND(_rpWindow->native_handle()), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
+	SendMessage(HWND(_rpWindow->native_handle()), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
 
-	app_->set_window(*window_.get());
+	_rpApp->set_window(*_rpWindow);
 
-	overlay_ = Overlay::Create(*window_.get(), 1, 1, 0, 0);
-	OnResize(window_->width(), window_->height());
-	overlay_->view()->LoadURL("file:///app.html");
+    _rpOverlay = Overlay::Create(*_rpWindow, 1, 1, 0, 0);
+    _rpOverlay->Resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	_rpOverlay->view()->LoadURL("file:///app.html");
 
-	app_->set_listener(this);
-	window_->set_listener(this);
-	overlay_->view()->set_load_listener(this);
-	overlay_->view()->set_view_listener(this);
+	_rpApp->set_listener(this);
+	_rpWindow->set_listener(this);
+	_rpOverlay->view()->set_load_listener(this);
+	_rpOverlay->view()->set_view_listener(this);
 }
 
-Knox::~Knox() {
+knox::app::Knox::~Knox() = default;
+
+void knox::app::Knox::Run() {
+	_rpApp->Run();
 }
 
-void Knox::Run() {
-	app_->Run();
+void knox::app::Knox::OnUpdate() {
+    // No update routines yet.
 }
 
-void Knox::OnUpdate() {
+void knox::app::Knox::OnClose() {
+    // No close routines yet.
 }
 
-void Knox::OnClose() {
+void knox::app::Knox::OnResize(uint32_t width, uint32_t height) {
+	_rpOverlay->Resize(width, height);
 }
 
-void Knox::OnResize(uint32_t width, uint32_t height) {
-	overlay_->Resize(width, height);
-}
-
-void Knox::OnFinishLoading(ultralight::View* caller,
+void knox::app::Knox::OnFinishLoading(ultralight::View* caller,
 	uint64_t frame_id,
 	bool is_main_frame,
 	const String& url) {
+    // No finish loading routines yet.
 }
 
-void Knox::OnDOMReady(ultralight::View* caller,
+void knox::app::Knox::OnDOMReady(ultralight::View* caller,
 	uint64_t frame_id,
 	bool is_main_frame,
 	const String& url) {
+    // No DOM ready routines yet.
 }
 
-void Knox::OnChangeCursor(ultralight::View* caller,
+void knox::app::Knox::OnChangeCursor(ultralight::View* caller,
 	Cursor cursor) {
-	window_->SetCursor(cursor);
+	_rpWindow->SetCursor(cursor);
 }
 
-void Knox::OnChangeTitle(ultralight::View* caller,
+void knox::app::Knox::OnChangeTitle(ultralight::View* caller,
 	const String& title) {
-	window_->SetTitle(title.utf8().data());
+	_rpWindow->SetTitle(title.utf8().data());
 }
