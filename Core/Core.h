@@ -7,8 +7,8 @@
 #endif
 
 namespace knox::core {
-		class CORE_API Core {
-		public:
-			Core();
-		};
-	};
+    class CORE_API Core {
+    public:
+        Core();
+    };
+};

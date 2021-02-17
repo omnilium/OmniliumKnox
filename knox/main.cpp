@@ -2,9 +2,10 @@
 
 using namespace knox::app;
 
-int main() {
-	Knox app;
-	app.Run();
+int main()
+{
+    Knox app;
+    app.Run();
 
-	return 0;
+    return 0;
 }
