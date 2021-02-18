@@ -1,6 +1,7 @@
 #include "private/pch.h"
 
 #include "Knox.h"
+#include "Utils.h"
 
 #include "../version.h"
 
@@ -9,16 +10,13 @@ constexpr int WINDOW_HEIGHT = 400;
 
 knox::app::Knox::Knox()
 {
-    HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON));
-
     _rpApp = App::Create();
 
     _rpWindow = Window::Create(_rpApp->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
             false, kWindowFlags_Titled | kWindowFlags_Resizable);
-    SendMessage(HWND(_rpWindow->native_handle()), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
-    SendMessage(HWND(_rpWindow->native_handle()), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
-
     _rpApp->set_window(*_rpWindow);
+
+    knox::core::Utils::SetApplicationIcon(HWND(_rpWindow->native_handle()), APP_ICON);
 
     _rpOverlay = Overlay::Create(*_rpWindow, 1, 1, 0, 0);
     _rpOverlay->Resize(WINDOW_WIDTH, WINDOW_HEIGHT);

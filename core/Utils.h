@@ -10,5 +10,7 @@ namespace knox::core {
         static BOOL DirectoryExists(LPCWSTR);
 
         static HMODULE GetCurrentModule();
+
+        static void SetApplicationIcon(HWND hWindow, DWORD dwIcon);
     };
 };

@@ -1,6 +1,7 @@
 #include "private/pch.h"
 
 #include "Logging.h"
+#include "Utils.h"
 #include "private/version.h"
 
 #include <iostream>
@@ -9,9 +10,7 @@ using namespace knox::core;
 
 int main()
 {
-    HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON));
-    SendMessage(GetConsoleWindow(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
-    SendMessage(GetConsoleWindow(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
+    Utils::SetApplicationIcon(GetConsoleWindow(), APP_ICON);
     SetWindowText(GetConsoleWindow(), L"Omnilium Knox");
 
     Logging* pLogging = Logging::GetInstance();
