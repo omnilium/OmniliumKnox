@@ -4,55 +4,57 @@
 
 #include <stdexcept>
 
-void knox::core::Utils::GetWorkingDirectory(LPWSTR lpDest)
-{
-    if (wcslen(lpDest)<MAX_PATH) {
-        throw std::invalid_argument("lpDest length < MAX_PATH");
-    }
+using namespace knox::core;
 
-    GetModuleFileName(nullptr, lpDest, MAX_PATH);
+void Utils::GetWorkingDirectory(LPWSTR destination)
+{
+	if (wcslen(destination) > MAX_PATH) {
+		throw std::invalid_argument("lpDest length > MAX_PATH");
+	}
+
+	GetModuleFileName(nullptr, destination, MAX_PATH);
 }
 
-BOOL knox::core::Utils::DirectoryExists(LPCWSTR lpPath)
+BOOL Utils::DirectoryExists(LPCWSTR path)
 {
-    DWORD dwAttrib = GetFileAttributes(lpPath);
+	DWORD file_attributes = GetFileAttributes(path);
 
-    return (dwAttrib!=INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+	return (file_attributes != INVALID_FILE_ATTRIBUTES && (file_attributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-HMODULE knox::core::Utils::GetCurrentModule()
+HMODULE Utils::GetCurrentModule()
 {
-    HMODULE hModule = nullptr;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR) &GetCurrentModule, &hModule);
+	HMODULE module = nullptr;
+	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR)&GetCurrentModule, &module);
 
-    return hModule;
+	return module;
 }
 
-void knox::core::Utils::SetApplicationIcon(HWND hWindow, DWORD dwIcon)
+void Utils::SetApplicationIcon(HWND window, DWORD icon)
 {
-    HANDLE hLIcon = LoadImage(
-            GetCurrentModule(),
-            MAKEINTRESOURCE(dwIcon),
-            IMAGE_ICON,
-            GetSystemMetrics(SM_CXICON),
-            GetSystemMetrics(SM_CYICON),
-            0
-            );
+	HANDLE large_icon = LoadImage(
+			GetCurrentModule(),
+					MAKEINTRESOURCE(icon),
+			IMAGE_ICON,
+			GetSystemMetrics(SM_CXICON),
+			GetSystemMetrics(SM_CYICON),
+			0
+	);
 
-    if (hLIcon) {
-        SendMessage(hWindow, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hLIcon));
-    }
+	if (large_icon) {
+		SendMessage(window, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(large_icon));
+	}
 
-    HANDLE hSIcon = LoadImage(
-            GetCurrentModule(),
-            MAKEINTRESOURCE(dwIcon),
-            IMAGE_ICON,
-            GetSystemMetrics(SM_CXSMICON),
-            GetSystemMetrics(SM_CYSMICON),
-            0
-    );
+	HANDLE small_icon = LoadImage(
+			GetCurrentModule(),
+					MAKEINTRESOURCE(icon),
+			IMAGE_ICON,
+			GetSystemMetrics(SM_CXSMICON),
+			GetSystemMetrics(SM_CYSMICON),
+			0
+	);
 
-    if (hSIcon) {
-        SendMessage(hWindow, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hLIcon));
-    }
+	if (small_icon) {
+		SendMessage(window, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(small_icon));
+	}
 }

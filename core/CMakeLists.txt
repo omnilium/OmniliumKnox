@@ -13,16 +13,12 @@ set(CPP_FILES
         "Logging.cpp"
         "Utils.cpp"
         "dllmain.cpp"
-        "RAIITemplates.cpp"
-        "MappedFile.cpp"
         )
 
 set(PUBLIC_H_FILES
         "Core.h"
         "Logging.h"
         "Utils.h"
-        "RAIITemplates.h"
-        "MappedFile.h"
         )
 
 set(PRIVATE_H_FILES

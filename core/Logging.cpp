@@ -1,108 +1,106 @@
 #include "private/pch.h"
 
 #include "Logging.h"
-#include "RAIITemplates.h"
 #include "Utils.h"
 
 #include <iostream>
 
-knox::core::Logging* knox::core::Logging::_spInstance = nullptr;
-ULONGLONG knox::core::Logging::_sullStartTime = 0;
+using namespace knox::core;
+using std::make_unique;
+using std::lock_guard;
 
-knox::core::Logging::Logging()
+mutex Logging::_log_mutex = mutex();
+
+Logging::Logging()
 {
-    if (!knox::core::Utils::DirectoryExists(L".\\logs\\")) {
-        CreateDirectory(L".\\logs\\", NULL);
-    }
+	if (! Utils::DirectoryExists(L".\\logs\\")) {
+		CreateDirectory(L".\\logs\\", nullptr);
+	}
 
-    HANDLE hLogFile = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, nullptr, CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL, nullptr);
+	_log_file = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, nullptr, CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hLogFile==INVALID_HANDLE_VALUE) {
-        // TODO: Cannot create log file, handle.
-        DWORD error = GetLastError();
-        printf("Error creating log file: %lu\n", error);
-    }
+	if (_log_file == INVALID_HANDLE_VALUE) {
+		DWORD error = GetLastError();
+		this->Log(LOG_LEVEL_WARN, L"Error creating log file: %lu\n", error);
 
-    _hLogFile = new AutoHandle<HANDLE>(hLogFile);
+		_log_file_valid = false;
+	}
 
-    _sullStartTime = GetTickCount64();
+	_start_time = GetTickCount64();
 }
 
-knox::core::Logging::~Logging()
+Logging& Logging::GetInstance()
 {
-    delete &_hLogFile;
+	static Logging instance;
+	return instance;
 }
 
-knox::core::Logging* knox::core::Logging::GetInstance()
+BOOL Logging::IsReady() const
 {
-    auto* mutex = new AutoMutex(L"knox::core::Logging>Mutex::Instance");
-    DWORD dwWaitResult = mutex->Acquire(INFINITE);
-
-    if (dwWaitResult==WAIT_ABANDONED) {
-        // TODO: Mutex is abandoned, possible corrupted state, handle.
-        printf("Returned Mutex handle was abandoned.");
-        return nullptr;
-    }
-
-    if (_spInstance==nullptr) {
-        _spInstance = new Logging();
-    }
-
-    return _spInstance;
+	return _start_time > 0;
 }
 
-void knox::core::Logging::Log(DWORD dwLogLevel, LPCWSTR lpFormat, ...)
+BOOL Logging::IsFileReady() const
 {
-    WCHAR wcErrorLevel[1];
-    switch (dwLogLevel) {
-    case LOG_LEVEL_TRACE:
-        wcErrorLevel[0] = L'T';
-        break;
-    case LOG_LEVEL_DEBUG:
-        wcErrorLevel[0] = L'D';
-        break;
-    default:
-    case LOG_LEVEL_INFO:
-        wcErrorLevel[0] = L'I';
-        break;
-    case LOG_LEVEL_WARN:
-        wcErrorLevel[0] = L'W';
-        break;
-    case LOG_LEVEL_ERROR:
-        wcErrorLevel[0] = L'E';
-        break;
-    }
+	return _log_file_valid;
+}
 
-    DWORD dwPid = GetCurrentProcessId();
-    DWORD dwTid = GetCurrentThreadId();
-    ULONGLONG ullTimestamp = GetTickCount64()-_sullStartTime;
+void Logging::Log(DWORD log_level, LPCWSTR format, ...)
+{
+	LPCWSTR log_level_char = L" ";
+	switch (log_level) {
+	case LOG_LEVEL_TRACE: log_level_char = L"T";
+		break;
+	case LOG_LEVEL_DEBUG: log_level_char = L"D";
+		break;
+	default:
+	case LOG_LEVEL_INFO: log_level_char = L"I";
+		break;
+	case LOG_LEVEL_WARN: log_level_char = L"W";
+		break;
+	case LOG_LEVEL_ERROR: log_level_char = L"E";
+		break;
+	}
 
-    va_list args;
-            va_start(args, lpFormat);
-    WCHAR wcFormat[LOG_MAX_MESSAGE_LENGTH];
-    vswprintf_s(wcFormat, LOG_MAX_MESSAGE_LENGTH, lpFormat, args);
-            va_end(args);
+	if (! IsReady()) {
+		return;
+	}
 
-    WCHAR wcMessage[LOG_MAX_ENTRY_LENGTH];
-    swprintf_s(wcMessage, LOG_MAX_ENTRY_LENGTH, L"[%I64d][%d][%d] %s\n", ullTimestamp, dwPid, dwTid, wcFormat);
+	DWORD pid = GetCurrentProcessId();
+	DWORD tid = GetCurrentThreadId();
+	ULONGLONG timestamp = GetTickCount64() - _start_time;
 
-    wprintf_s(L"%s", wcMessage);
+	va_list args;
+			va_start(args, format);
+	WCHAR formatted_message[LOG_MAX_MESSAGE_LENGTH];
+	vswprintf_s(formatted_message, LOG_MAX_MESSAGE_LENGTH, format, args);
+			va_end(args);
 
-    {
-        auto* mutex = new AutoMutex(L"knox::core::Logging>Mutex::Write");
-        DWORD dwWaitResult = mutex->Acquire(INFINITE);
+	WCHAR message[LOG_MAX_ENTRY_LENGTH];
+	swprintf_s(message,
+			LOG_MAX_ENTRY_LENGTH,
+			L"[%s][%08I64d][%d][%d] %s\n",
+			log_level_char,
+			timestamp,
+			pid,
+			tid,
+			formatted_message);
 
-        if (dwWaitResult==WAIT_ABANDONED) {
-            // TODO: Mutex is abandoned, possible corrupted state, handle.
-            printf("Returned Mutex handle was abandoned.");
-            return;
-        }
+	wprintf_s(L"%s", message);
 
-        if (!WriteFile(_hLogFile->Handle, wcMessage, lstrlenW(wcMessage)*sizeof(wchar_t), nullptr, nullptr)) {
-            // TODO: Cannot create log file, handle.
-            DWORD error = GetLastError();
-            printf("Error writing log file: %lu\n", error);
-        }
-    }
+	if (! IsFileReady()) {
+		return;
+	}
+
+	lock_guard<mutex> lock(_log_mutex);
+
+	if (! WriteFile(_log_file, message, lstrlenW(message) * sizeof(wchar_t), nullptr, nullptr)) {
+		_log_file_valid = false;
+
+		DWORD error = GetLastError();
+		Log(LOG_LEVEL_WARN, L"Error writing log file: 0x%08x\n", error);
+
+		return;
+	}
 }

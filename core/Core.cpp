@@ -2,4 +2,6 @@
 
 #include "Core.h"
 
-knox::core::Core::Core() = default;
+using namespace knox::core;
+
+Core::Core() = default;
