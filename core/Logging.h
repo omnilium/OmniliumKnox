@@ -15,6 +15,8 @@ constexpr int LOG_LEVEL_ERROR = 4;
 constexpr int LOG_MAX_MESSAGE_LENGTH = 400;
 constexpr int LOG_MAX_ENTRY_LENGTH = 500;
 
+constexpr int LOG_FILES_TO_KEEP = 3;
+
 using std::mutex;
 
 namespace knox::core {
@@ -26,6 +28,9 @@ private:
 	BOOL _log_file_valid = true;
 
 	ULONGLONG _start_time = 0;
+
+	void ProcessLogFiles();
+	void ProcessLogFile(LPCWSTR old_name, LPCWSTR new_name, BOOL delete_if_found);
 
 	Logging();
 public:

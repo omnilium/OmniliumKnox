@@ -21,7 +21,7 @@ BOOL APIENTRY DllMain([[maybe_unused]] HMODULE hModule,
 		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:logger.Log(LOG_LEVEL_INFO, L"Core detached.");
+	case DLL_PROCESS_DETACH:;
 		break;
 	default:throw std::exception("Unknown DllMain reason for call");
 	}

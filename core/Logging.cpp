@@ -3,7 +3,7 @@
 #include "Logging.h"
 #include "Utils.h"
 
-#include <iostream>
+#include <string>
 
 using namespace knox::core;
 using std::make_unique;
@@ -17,12 +17,19 @@ Logging::Logging()
 		CreateDirectory(L".\\logs\\", nullptr);
 	}
 
+	try {
+		ProcessLogFiles();
+	}
+	catch (...) {
+		Log(LOG_LEVEL_ERROR, L"Error processing log files: 0x%08x", GetLastError());
+	}
+
 	_log_file = CreateFile(L".\\logs\\log.txt", FILE_APPEND_DATA, 0, nullptr, CREATE_ALWAYS,
 			FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	if (_log_file == INVALID_HANDLE_VALUE) {
 		DWORD error = GetLastError();
-		this->Log(LOG_LEVEL_WARN, L"Error creating log file: %lu\n", error);
+		Log(LOG_LEVEL_WARN, L"Error creating log file: %lu", error);
 
 		_log_file_valid = false;
 	}
@@ -80,7 +87,7 @@ void Logging::Log(DWORD log_level, LPCWSTR format, ...)
 	WCHAR message[LOG_MAX_ENTRY_LENGTH];
 	swprintf_s(message,
 			LOG_MAX_ENTRY_LENGTH,
-			L"[%s][%08I64d][%d][%d] %s\n",
+			L"[%s][%08I64d][%06d][%06d] %s\n",
 			log_level_char,
 			timestamp,
 			pid,
@@ -99,8 +106,45 @@ void Logging::Log(DWORD log_level, LPCWSTR format, ...)
 		_log_file_valid = false;
 
 		DWORD error = GetLastError();
-		Log(LOG_LEVEL_WARN, L"Error writing log file: 0x%08x\n", error);
+		Log(LOG_LEVEL_WARN, L"Error writing log file: 0x%08x", error);
 
 		return;
+	}
+}
+
+void Logging::ProcessLogFiles() {
+	WCHAR old_name[17] = L".\\logs\\log_0.txt";
+	WCHAR new_name[17] = L".\\logs\\log_0.txt";
+
+	for (int i = LOG_FILES_TO_KEEP; i >= 0; i--) {
+		if (i > 0) {
+			old_name[11] = std::to_wstring(i).c_str()[0];
+		} else {
+			old_name[10] = L'.';
+			old_name[11] = L't';
+			old_name[12] = L'x';
+			old_name[13] = L't';
+			old_name[14] = L'\0';
+		}
+
+		new_name[11] = std::to_wstring(i + 1).c_str()[0];
+
+		ProcessLogFile(old_name, new_name, i == 3);
+	}
+}
+
+void Logging::ProcessLogFile(LPCWSTR old_name, LPCWSTR new_name, BOOL delete_if_found) {
+	WIN32_FIND_DATA find_data;
+	auto file_handle = FindFirstFile(old_name, &find_data);
+
+	if (file_handle != INVALID_HANDLE_VALUE) {
+		FindClose(file_handle);
+
+		if (delete_if_found) {
+			DeleteFile(old_name);
+			return;
+		}
+
+		MoveFile(old_name, new_name);
 	}
 }
